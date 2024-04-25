@@ -25,18 +25,29 @@ xml_tree.SubElement(channel_element, 'itunes:category', {'text': yaml_data['cate
 
 for item in yaml_data['item']:
     item_element = xml_tree.SubElement(channel_element, 'item')
-    xml_tree.SubElement(item_element, 'title').text = item['title']
-    xml_tree.SubElement(item_element, 'itunes:author').text = yaml_data['author']
-    xml_tree.SubElement(item_element, 'description').text = item['description']
-    xml_tree.SubElement(item_element, 'itunes:duration').text = item['duration']
-    xml_tree.SubElement(item_element, 'pubDate').text = item['published']
-    xml_tree.SubElement(item_element, 'title').text = item['title']
+    
+    title_element = xml_tree.SubElement(item_element, 'title')
+    title_element.text = item['title']
 
-    enclosure = xml_tree.SubElement(item_element, 'enclosure', {
-      'url': link_prefix + item['file'],
-      'type': 'audio/mpeg',
-      'length': item['length']
-    })
+    author_element = xml_tree.SubElement(item_element, 'itunes:author')
+    author_element.text = yaml_data['author']
+
+    description_element = xml_tree.SubElement(item_element, 'description')
+    description_element.text = item['description']
+
+    duration_element = xml_tree.SubElement(item_element, 'itunes:duration')
+    duration_element.text = item['duration']
+
+    pubdate_element = xml_tree.SubElement(item_element, 'pubDate')
+    pubdate_element.text = item['published']
+
+    enclosure_attributes = {
+        'url': link_prefix + item['file'],
+        'type': 'audio/mpeg',
+        'length': item['length']
+    }
+    enclosure_element = xml_tree.SubElement(item_element, 'enclosure', enclosure_attributes)
+
 
 output_tree = xml_tree.ElementTree(rss_element)
 output_tree.write('podcast.xml', encoding='UTF-8', xml_declaration=True)
